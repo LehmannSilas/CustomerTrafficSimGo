@@ -1,8 +1,11 @@
 package CustomerTrafficSimGo
 
+import "net/http"
+
 type Route struct {
-	method string
-	path   string
+	method       string
+	path         string
+	userFunction func(*http.Request, func() *http.Response)
 }
 
 type Simulator struct {
@@ -17,8 +20,12 @@ func NewSimulator(target string) *Simulator {
 	}
 }
 
-func (s *Simulator) AddRoute(method string, path string) {
-	s.routes = append(s.routes, Route{path: path, method: method})
+func (s *Simulator) AddRoute(method string, path string, function func(*http.Request, func() *http.Response)) {
+	s.routes = append(s.routes, Route{
+		path:         path,
+		method:       method,
+		userFunction: function,
+	})
 }
 
 func (s *Simulator) Print() {
